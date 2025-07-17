@@ -336,7 +336,9 @@ Citizen.CreateThread(function()
         if IsPedArmed(playerPed, 7) then
             local hit, hitEntity = GetEntityPlayerIsFreeAimingAt(PlayerId())
 
-            if hit and DoesEntityExist(hitEntity) and not IsPedAPlayer(hitEntity) and not isBlacklisted(GetEntityModel(hitEntity)) then
+            local pedType = GetPedType(hitEntity)
+
+            if hit and DoesEntityExist(hitEntity) and not IsPedAPlayer(hitEntity) and (pedType == 4 or pedType == 5 or pedType == 6) and not isBlacklisted(GetEntityModel(hitEntity)) then
                 if not IsPedDeadOrDying(hitEntity, true) then
                     local npcCoords = GetEntityCoords(hitEntity)
                     local distance = #(playerCoords - npcCoords)
