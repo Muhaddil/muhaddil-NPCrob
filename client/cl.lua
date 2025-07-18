@@ -30,20 +30,13 @@ local function isBlacklisted(model)
     return Config.BlacklistNpc[model] == true
 end
 
-local blacklistedJobs = Config.BlacklistedJobs
-
 function isJobBlacklisted()
     local playerJob = ESX.GetPlayerData().job.name
-    for _, job in ipairs(blacklistedJobs) do
-        if playerJob == job then
-            return true
-        end
-    end
-    return false
+    return Config.PoliceJobs[playerJob] == true
 end
 
 function Notify(msg, typenotif)
-    if Config.Notifications == 'ox' then
+    if Config.Notify == 'ox' then
         lib.notify({
             title = "Robo",
             description = msg,
@@ -51,9 +44,9 @@ function Notify(msg, typenotif)
             type = typenotif,
             duration = 5000
         })
-    elseif Config.Notifications == 'okok' then
+    elseif Config.Notify == 'okok' then
         exports['okokNotify']:Alert("", msg, 5000, typenotif)
-    elseif Config.Notifications == 'esx' then
+    elseif Config.Notify == 'esx' then
         ESX.ShowNotification(msg)
     end
 end
