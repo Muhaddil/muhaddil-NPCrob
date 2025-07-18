@@ -1,3 +1,5 @@
+local WebHook = ''
+
 if Config.UseOldEsx then
     ESX = nil
     
@@ -20,8 +22,8 @@ end
 ESX.RegisterServerCallback('Muhaddil-NPCRob:amount', function(source, cb)
     local cops = 0
 
-    for _, job in pairs(Config.PoliceJobs) do
-        cops = cops + ESX.GetNumPlayers('job', job)
+    for jobName, _ in pairs(Config.PoliceJobs) do
+        cops = cops + ESX.GetNumPlayers('job', jobName)
     end
 
     if cops >= Config.MinimumCops then
@@ -41,14 +43,28 @@ RegisterNetEvent('Muhaddil-NPCRob:server:robNpc', function(entityId)
 
     if xPlayer then
         xPlayer.addInventoryItem(itemName, itemAmount)
-        local message = string.format("**Jugador con ID:** %d\n**Robó Item:** %s\n**Cantidad de Item:** %d", source,
-            itemName, itemAmount)
-        PerformHttpRequest(
-        'https://discord.com/api/webhooks/1112330138743488512/HotHAxkKD8-WcSlz9Cuz1XNG74CFTrQThzGR_2ez-POal6dFBi1Ega_lbQPEc0wDuQ3V',
+
+        local embedData = {
+            embeds = {{
+                title = "NPC Robado",
+                color = 16753920, -- Orange
+                fields = {
+                    { name = "Jugador con ID", value = tostring(source), inline = true },
+                    { name = "Item Robado", value = itemName, inline = true },
+                    { name = "Cantidad", value = tostring(itemAmount), inline = true }
+                },
+                footer = {
+                    text = "Sistema de Robo NPC"
+                },
+                timestamp = os.date("!%Y-%m-%dT%H:%M:%SZ")
+            }}
+        }
+
+        PerformHttpRequest(WebHook,
             function(err, text, headers)
-            end, 'POST', json.encode({
-            content = message
-        }), { ['Content-Type'] = 'application/json' })
+            end, 'POST', json.encode(embedData),
+            { ['Content-Type'] = 'application/json' }
+        )
     end
 end)
 
