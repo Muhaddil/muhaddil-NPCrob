@@ -1,4 +1,3 @@
-shared_script '@esx-garbagejob/shared_fg-obfuscated.lua'
 fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
